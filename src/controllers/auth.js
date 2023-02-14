@@ -45,7 +45,7 @@ export async function signin(_, res) {
     const matches = bcrypt.compareSync(password, theUser.password);
     if (!matches) return res.sendStatus(401);
     const token = jwt.sign({ id: theUser.id }, JWT_SECRET);
-    res.status(200).send(token);
+    res.status(200).send({ token });
   } catch (error) {
     console.log(error.message);
     return res.sendStatus(500);
