@@ -24,3 +24,23 @@ export async function userData(_, res) {
     return res.sendStatus(500);
   }
 }
+
+export async function usersRanking(_, res) {
+  try {
+    const results = await db.query(
+      `
+      SELECT "user_account"."id", "user_account"."name", 
+      CAST(COUNT ("url"."id") AS INTEGER) AS "linksCount",
+      CAST(COALESCE(SUM("visitCount"), 0) AS INTEGER) as "visitCount"
+      FROM "user_account" LEFT JOIN "url" on "user_account"."id" = "url"."user"
+      GROUP BY "user_account"."id", "user_account"."name"
+      ORDER BY "visitCount" DESC
+      LIMIT 10
+       `
+    );
+    return res.status(200).send(results.rows);
+  } catch (error) {
+    console.log(error.message);
+    return res.sendStatus(500);
+  }
+}
