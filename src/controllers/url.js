@@ -29,7 +29,20 @@ export async function shortenUrl(_, res) {
         `,
       [userId, candidateId, url]
     );
-    return res.sendStatus(201);
+    
+    // get inserted id
+    const insertedUrl = await db.query(
+      `
+      SELECT "id"
+      FROM "url"
+      WHERE "shortUrl" = $1
+      `,
+      [candidateId]
+    );
+
+    return res
+      .status(201)
+      .send({ id: insertedUrl.rows[0].id, shortUrl: candidateId });
   } catch (error) {
     console.log(error.message);
     return res.sendStatus(500);
