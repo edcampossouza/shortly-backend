@@ -70,3 +70,29 @@ export async function getUrlByShortUrl(req, res) {
     return res.sendStatus(500);
   }
 }
+
+export async function deleteUrl(req, res) {
+  const { id: urlId } = req.params;
+  const { id: userId } = res.locals.user;
+  try {
+    // query url by id
+    const urlExists = await db.query(
+      'SELECT "user" FROM "url" WHERE "id" = $1',
+      [urlId]
+    );
+
+    // url id not fount
+    if (urlExists.rowCount < 1) return res.sendStatus(404);
+    const urlFound = urlExists.rows[0];
+
+    // url belongs to another user
+    if (urlFound.user !== userId) return res.sendStatus(401);
+
+    // delete
+    await db.query('DELETE FROM "url" WHERE "id" = $1', [urlId]);
+    return res.sendStatus(204);
+  } catch (error) {
+    console.log(error.message);
+    return res.sendStatus(500);
+  }
+}
