@@ -35,3 +35,18 @@ export async function shortenUrl(_, res) {
     return res.sendStatus(500);
   }
 }
+
+export async function getUrl(req, res) {
+  const { id } = req.params;
+  try {
+    const urlExists = await db.query(
+      'SELECT "id", "shortUrl", "url" FROM "url" WHERE "id" = $1 ',
+      [id]
+    );
+    if (urlExists.rowCount < 1) return res.sendStatus(404);
+    return res.status(200).send(urlExists.rows[0]);
+  } catch (error) {
+    console.log(error.message);
+    return res.sendStatus(500);
+  }
+}
