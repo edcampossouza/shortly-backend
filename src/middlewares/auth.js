@@ -12,7 +12,7 @@ export async function protectRoute(req, res, next) {
   try {
     const payload = jwt.verify(token, JWT_SECRET);
     userExists = await db.query(
-      `SELECT "name", "email" FROM "user" where id = $1`,
+      `SELECT "name", "email" FROM "user_account" where id = $1`,
       [payload.id]
     );
   } catch (error) {

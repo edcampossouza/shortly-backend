@@ -10,14 +10,14 @@ export async function signup(_, res) {
   const { email, password, name } = res.locals.value;
   try {
     const userExists = await db.query(
-      'select * from "user" where "email" = $1',
+      'select * from "user_account" where "email" = $1',
       [email]
     );
     if (userExists.rowCount !== 0) return res.sendStatus(409);
     const hashedPassword = bcrypt.hashSync(password, 10);
     await db.query(
       ` 
-        INSERT INTO "user"
+        INSERT INTO "user_account"
         ("email", "name", "password")
         values($1, $2, $3)
       `,
@@ -35,7 +35,7 @@ export async function signin(_, res) {
   try {
     const userExists = await db.query(
       `
-        SELECT * FROM "user"
+        SELECT * FROM "user_account"
         where email = $1      
       `,
       [email]
