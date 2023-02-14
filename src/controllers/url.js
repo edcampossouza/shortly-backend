@@ -50,3 +50,23 @@ export async function getUrl(req, res) {
     return res.sendStatus(500);
   }
 }
+
+export async function getUrlByShortUrl(req, res) {
+  const { shortUrl } = req.params;
+  try {
+    const urlExists = await db.query(
+      `SELECT * FROM "url" WHERE "shortUrl" = $1`,
+      [shortUrl]
+    );
+    if (urlExists.rowCount < 1) return res.sendStatus(404);
+    const foundUrl = urlExists.rows[0];
+    await db.query(
+      'UPDATE "url" SET "visitCount" = "visitCount" + 1 WHERE id = $1',
+      [foundUrl.id]
+    );
+    return res.redirect(foundUrl.url);
+  } catch (error) {
+    console.log(error.message);
+    return res.sendStatus(500);
+  }
+}
