@@ -4,8 +4,6 @@ import { userData } from "../controllers/users.js";
 
 const userRouter = Router();
 
-userRouter.use(protectRoute);
-
-userRouter.get("/users/me", userData);
+userRouter.get("/users/me", protectRoute, userData);
 
 export default userRouter;
