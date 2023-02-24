@@ -15,7 +15,7 @@ export async function userData(_, res) {
     const returnObj = {
       id: userId,
       name: userName,
-      vistCount: visitCount.rowCount > 0 ? Number(visitCount.rows[0].count) : 0,
+      visitCount: visitCount.rowCount > 0 ? Number(visitCount.rows[0].count) : 0,
       shortenedUrls: urls.rows,
     };
     return res.status(200).send(returnObj);
